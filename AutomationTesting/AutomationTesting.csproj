@@ -65,11 +65,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base\TestBase.cs" />
+    <Compile Include="Configuration\TestSettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestSettings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="PageObjects\AccountPage.cs" />
+    <Compile Include="PageObjects\AuthenticationPage.cs" />
+    <Compile Include="PageObjects\HomePage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings\Variables.cs" />
+    <Compile Include="TestCases\Tests.cs" />
+    <Compile Include="Utilities\Browser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Configuration\TestSettings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TestSettings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
