@@ -22,7 +22,7 @@ namespace AutomationTesting.Base
 
             if (capability is EdgeOptions)
                 capability.UseChromium = true;
-
+                
             if (operatingSystem.Equals("Windows 10"))
                 nodeURL = "http://192.168.56.105:1111/wd/hub"; // Windows 10
             else if (operatingSystem.Equals("Ubuntu"))
@@ -48,8 +48,6 @@ namespace AutomationTesting.Base
                 return new FirefoxOptions(); // Mozilla Firefox
             else if (browserName.Equals("Edge"))
                 return new EdgeOptions(); // Microsoft Edge
-            else if (browserName.Equals("IE"))
-                return new InternetExplorerOptions(); // Internet Explorer
             else if (browserName.Equals("Safari"))
                 return new SafariOptions(); // Safari
             else
@@ -66,7 +64,7 @@ namespace AutomationTesting.Base
                 switch (operatingSystem)
                 {
                     case "Windows 10":
-                        browsers = new string[] { "Chrome", "Firefox", "IE", "Edge" };
+                        browsers = new string[] { "Chrome", "Firefox", "Edge" };
                         break;
 
                     case "Ubuntu":
