@@ -14,7 +14,7 @@ namespace AutomationTesting.TestCases
     {
         [Test]
         [TestCaseSource(typeof(TestBase), "TestData")]
-        [Category("Login")]
+        [Category("Create User")]
         [Description("Creates a new user and logs in to the store")]
         public void CreateUser(string browserName, string operatingSystem)
         {
@@ -53,7 +53,7 @@ namespace AutomationTesting.TestCases
             // Personal Information
             Browser.WaitForElement(driver, createAccountPage.rbnGender);
 
-            createAccountPage.rbnGender.Click();      
+            Browser.Click(driver, createAccountPage.rbnGender);      
             createAccountPage.txtFirstName.SendKeys(Variables.FirstName);
             createAccountPage.txtLastName.SendKeys(Variables.LastName);
             createAccountPage.txtPassword.SendKeys(password);
@@ -72,15 +72,15 @@ namespace AutomationTesting.TestCases
             new SelectElement(createAccountPage.ddlCountry).SelectByText(Variables.Country);
 
             Browser.WaitForElement(driver, createAccountPage.btnRegister);
-            createAccountPage.btnRegister.Click();
+            Browser.Click(driver, createAccountPage.btnRegister);
 
             var accountPage = new AccountPage(driver);
             #endregion
 
             #region Verify successful login of newly created user
-            Browser.WaitForElement(driver, accountPage.lblUser);
+            Browser.WaitForElement(driver, accountPage.lnkUser);
 
-            Assert.True(accountPage.lblUser.Text.Equals(Variables.FirstName + " " + Variables.LastName));
+            Assert.True(accountPage.lnkUser.Text.Equals(Variables.FirstName + " " + Variables.LastName));
             #endregion
         }
     }

@@ -8,7 +8,9 @@ namespace AutomationTesting.PageObjects
     {
         #region Page Elements
         [FindsBy(How = How.XPath, Using = "//a[@class='account']/span")]
-        public IWebElement lblUser = null;
+        public IWebElement lnkUser = null;
+        [FindsBy(How = How.XPath, Using = "//div[@id='contact-link']/a")]
+        public IWebElement lnkContactUs = null;
         #endregion
 
         public AccountPage(IWebDriver driver)

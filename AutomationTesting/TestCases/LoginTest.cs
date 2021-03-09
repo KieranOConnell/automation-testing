@@ -49,9 +49,9 @@ namespace AutomationTesting.TestCases
             #endregion
 
             #region Verify successful login of test user
-            Browser.WaitForElement(driver, accountPage.lblUser);
+            Browser.WaitForElement(driver, accountPage.lnkUser);
 
-            Assert.True(accountPage.lblUser.Text.Equals(Variables.User));
+            Assert.True(accountPage.lnkUser.Text.Equals(Variables.User));
             #endregion
         }
     }
