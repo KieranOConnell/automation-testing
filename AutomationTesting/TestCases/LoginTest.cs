@@ -9,13 +9,13 @@ namespace AutomationTesting.TestCases
     [TestFixture]
     [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
     [Parallelizable(ParallelScope.Children)]
-    public class Tests : TestBase
+    public class LoginTest : TestBase
     {
         [Test]
         [TestCaseSource(typeof(TestBase), "TestData")]
         [Category("Login")]
-        [Description("Verify login functionality for users of the store")]
-        public void LoginTest(string browserName, string operatingSystem)
+        [Description("Simple login test for users of the store")]
+        public void Login(string browserName, string operatingSystem)
         {
             #region Setting up browser and OS for testing
             SetUp(browserName, operatingSystem);
@@ -30,7 +30,7 @@ namespace AutomationTesting.TestCases
 
             #region Click the login button to progress to authentication
             Browser.WaitForElement(driver, homePage.btnLogin);
-            homePage.btnLogin.Click();
+            Browser.Click(driver, homePage.btnLogin);
 
             var authenticationPage = new AuthenticationPage(driver);
             #endregion
@@ -43,7 +43,7 @@ namespace AutomationTesting.TestCases
             authenticationPage.txtPassword.SendKeys(Variables.Password);
 
             Browser.WaitForElement(driver, authenticationPage.btnLogin);
-            authenticationPage.btnLogin.Click();
+            Browser.Click(driver, authenticationPage.btnLogin);
 
             var accountPage = new AccountPage(driver);
             #endregion
