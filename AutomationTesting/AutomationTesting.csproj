@@ -72,6 +72,7 @@
     </Compile>
     <Compile Include="PageObjects\AccountPage.cs" />
     <Compile Include="PageObjects\AuthenticationPage.cs" />
+    <Compile Include="PageObjects\CreateAccountPage.cs" />
     <Compile Include="PageObjects\HomePage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\Variables.cs" />
