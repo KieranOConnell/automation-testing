@@ -25,5 +25,12 @@
         public const string SubjectHeading = "Customer service";
         public const string Message = "Test message";
         public const string SuccessfulMessage = "Your message has been successfully sent to our team.";
+
+        // OrderProduct test
+        public const string Product = "Faded Short Sleeve T-shirts";
+        public const string Quantity = "1";
+        public const string Size = "M";
+        public const string SuccessfulCart = "Product successfully added to your shopping cart";
+        public const string SuccessfulOrder = "Your order on My Store is complete.";
     }
 }
