@@ -11,6 +11,8 @@ namespace AutomationTesting.PageObjects
         public IWebElement lnkUser = null;
         [FindsBy(How = How.XPath, Using = "//div[@id='contact-link']/a")]
         public IWebElement lnkContactUs = null;
+        [FindsBy(How = How.XPath, Using = "//div[@id='header_logo']/a")]
+        public IWebElement imgLogo = null;
         #endregion
 
         public AccountPage(IWebDriver driver)
