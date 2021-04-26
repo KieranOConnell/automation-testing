@@ -2,7 +2,9 @@
 using AutomationTesting.PageObjects;
 using AutomationTesting.Settings;
 using AutomationTesting.Utilities;
+using AventStack.ExtentReports;
 using NUnit.Framework;
+using System;
 
 namespace AutomationTesting.TestCases
 {
@@ -17,42 +19,61 @@ namespace AutomationTesting.TestCases
         [Description("Simple login test for users of the store")]
         public void Login(string browserName, string operatingSystem)
         {
-            #region Setting up browser and OS for testing
-            SetUp(browserName, operatingSystem);
-            #endregion
+            try
+            {
+                #region Setting up browser and OS for testing
+                test = report.CreateTest(String.Format("LoginTest - {0}, {1}", browserName, operatingSystem));
+                test.Log(Status.Info, "Starting the LoginTest");
 
-            #region Navigate to the store homepage
-            driver.Navigate().GoToUrl(Variables.Website);
-            Assert.True(driver.Title.Contains("My Store"));
+                SetUp(browserName, operatingSystem);
+                #endregion
 
-            var homePage = new HomePage(driver);
-            #endregion
+                #region Navigate to the store homepage
+                test.Log(Status.Info, "Navigating to the store homepage");
 
-            #region Click the login button to progress to authentication
-            Browser.WaitForElement(driver, homePage.btnLogin);
-            Browser.Click(driver, homePage.btnLogin);
+                driver.Navigate().GoToUrl(Variables.Website);
+                Assert.True(driver.Title.Contains("My Store"));
 
-            var authenticationPage = new AuthenticationPage(driver);
-            #endregion
+                var homePage = new HomePage(driver);
+                #endregion
 
-            #region Enter login information & click sign in button
-            Browser.WaitForElement(driver, authenticationPage.txtEmail);
-            Browser.WaitForElement(driver, authenticationPage.txtPassword);
+                #region Click the login button to progress to authentication
+                test.Log(Status.Info, "Attempting to log in to the store");
 
-            authenticationPage.txtEmail.SendKeys(Variables.Email);
-            authenticationPage.txtPassword.SendKeys(Variables.Password);
+                Browser.WaitForElement(driver, homePage.btnLogin);
+                Browser.Click(driver, homePage.btnLogin);
 
-            Browser.WaitForElement(driver, authenticationPage.btnLogin);
-            Browser.Click(driver, authenticationPage.btnLogin);
+                var authenticationPage = new AuthenticationPage(driver);
+                #endregion
 
-            var accountPage = new AccountPage(driver);
-            #endregion
+                #region Enter login information & click sign in button
+                test.Log(Status.Info, "Entering login information & signing in");
 
-            #region Verify successful login of test user
-            Browser.WaitForElement(driver, accountPage.lnkUser);
+                Browser.WaitForElement(driver, authenticationPage.txtEmail);
+                Browser.WaitForElement(driver, authenticationPage.txtPassword);
 
-            Assert.True(accountPage.lnkUser.Text.Equals(Variables.User));
-            #endregion
+                authenticationPage.txtEmail.SendKeys(Variables.Email);
+                authenticationPage.txtPassword.SendKeys(Variables.Password);
+
+                Browser.WaitForElement(driver, authenticationPage.btnLogin);
+                Browser.Click(driver, authenticationPage.btnLogin);
+
+                var accountPage = new AccountPage(driver);
+                #endregion
+
+                #region Verify successful login of test user
+                test.Log(Status.Info, "Verifying successful login of test user");
+
+                Browser.WaitForElement(driver, accountPage.lnkUser);
+                Assert.True(accountPage.lnkUser.Text.Equals(Variables.User));
+
+                test.Log(Status.Pass, "LoginTest has passed successfully");
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                test.Log(Status.Fail, ex.Message);
+            }
         }
     }
 }

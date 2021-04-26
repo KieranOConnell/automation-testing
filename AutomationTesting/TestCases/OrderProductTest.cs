@@ -2,8 +2,10 @@
 using AutomationTesting.PageObjects;
 using AutomationTesting.Settings;
 using AutomationTesting.Utilities;
+using AventStack.ExtentReports;
 using NUnit.Framework;
 using OpenQA.Selenium.Support.UI;
+using System;
 
 namespace AutomationTesting.TestCases
 {
@@ -18,93 +20,124 @@ namespace AutomationTesting.TestCases
         [Description("Verifies the functionality of ordering a product from the store")]
         public void OrderProduct(string browserName, string operatingSystem)
         {
-            #region Setting up browser and OS for testing
-            SetUp(browserName, operatingSystem);
-            #endregion
+            try
+            {
+                #region Setting up browser and OS for testing
+                test = report.CreateTest(String.Format("OrderProductTest - {0}, {1}", browserName, operatingSystem));
+                test.Log(Status.Info, "Starting the OrderProductTest");
 
-            #region Navigate to the store homepage
-            driver.Navigate().GoToUrl(Variables.Website);
-            Assert.True(driver.Title.Contains("My Store"));
+                SetUp(browserName, operatingSystem);
+                #endregion
 
-            var homePage = new HomePage(driver);
-            #endregion
+                #region Navigate to the store homepage
+                test.Log(Status.Info, "Navigating to the store homepage");
 
-            #region Click the login button to progress to authentication
-            Browser.WaitForElement(driver, homePage.btnLogin);
-            Browser.Click(driver, homePage.btnLogin);
+                driver.Navigate().GoToUrl(Variables.Website);
+                Assert.True(driver.Title.Contains("My Store"));
 
-            var authenticationPage = new AuthenticationPage(driver);
-            #endregion
+                var homePage = new HomePage(driver);
+                #endregion
 
-            #region Enter login information & click sign in button
-            Browser.WaitForElement(driver, authenticationPage.txtEmail);
-            Browser.WaitForElement(driver, authenticationPage.txtPassword);
+                #region Click the login button to progress to authentication
+                test.Log(Status.Info, "Attempting to log in to the store");
 
-            authenticationPage.txtEmail.SendKeys(Variables.Email);
-            authenticationPage.txtPassword.SendKeys(Variables.Password);
+                Browser.WaitForElement(driver, homePage.btnLogin);
+                Browser.Click(driver, homePage.btnLogin);
 
-            Browser.WaitForElement(driver, authenticationPage.btnLogin);
-            Browser.Click(driver, authenticationPage.btnLogin);
+                var authenticationPage = new AuthenticationPage(driver);
+                #endregion
 
-            var accountPage = new AccountPage(driver);
-            #endregion
+                #region Enter login information & click sign in button
+                test.Log(Status.Info, "Entering login information & signing in");
 
-            #region Verify successful login of test user and go back to the home page
-            Browser.WaitForElement(driver, accountPage.lnkUser);
+                Browser.WaitForElement(driver, authenticationPage.txtEmail);
+                Browser.WaitForElement(driver, authenticationPage.txtPassword);
 
-            Assert.True(accountPage.lnkUser.Text.Equals(Variables.User));
+                authenticationPage.txtEmail.SendKeys(Variables.Email);
+                authenticationPage.txtPassword.SendKeys(Variables.Password);
 
-            Browser.WaitForElement(driver, accountPage.imgLogo);
-            Browser.Click(driver, accountPage.imgLogo);
+                Browser.WaitForElement(driver, authenticationPage.btnLogin);
+                Browser.Click(driver, authenticationPage.btnLogin);
 
-            homePage = new HomePage(driver);
-            #endregion
+                var accountPage = new AccountPage(driver);
+                #endregion
 
-            #region Add a product to the cart and proceed to checkout
-            Browser.WaitForElement(driver, homePage.imgProduct);
-            Browser.Click(driver, homePage.imgProduct);
+                #region Verify successful login of test user and go back to the home page
+                test.Log(Status.Info, "Verifying successful login of test user");
 
-            var productPage = new ProductPage(driver);
+                Browser.WaitForElement(driver, accountPage.lnkUser);
 
-            Browser.WaitForElement(driver, productPage.txtQuantity);
-            Assert.AreEqual(Variables.Quantity, productPage.txtQuantity.GetAttribute("value"));
-            new SelectElement(productPage.ddlSize).SelectByText(Variables.Size);
+                Assert.True(accountPage.lnkUser.Text.Equals(Variables.User));
 
-            Browser.WaitForElement(driver, productPage.btnAddToCart);
-            Browser.Click(driver, productPage.btnAddToCart);
+                test.Log(Status.Info, "Returning to the home page");
 
-            Browser.WaitForElement(driver, productPage.lblResponse);
-            Assert.AreEqual(Variables.SuccessfulCart, productPage.lblResponse.Text);
+                Browser.WaitForElement(driver, accountPage.imgLogo);
+                Browser.Click(driver, accountPage.imgLogo);
 
-            Browser.WaitForElement(driver, productPage.btnProceedToCheckout);
-            Browser.Click(driver, productPage.btnProceedToCheckout);
+                homePage = new HomePage(driver);
+                #endregion
 
-            var checkoutPage = new CheckoutPage(driver);
-            #endregion
+                #region Add a product to the cart and proceed to checkout
+                test.Log(Status.Info, "Adding product to the cart");
 
-            #region Verify correct item has been added to cart and checkout
-            Browser.WaitForElement(driver, checkoutPage.lblProduct);
-            Assert.AreEqual(Variables.Product, checkoutPage.lblProduct.Text);
+                Browser.WaitForElement(driver, homePage.imgProduct);
+                Browser.Click(driver, homePage.imgProduct);
 
-            Browser.WaitForElement(driver, checkoutPage.btnSummaryCheckout);
-            Browser.Click(driver, checkoutPage.btnSummaryCheckout);
+                var productPage = new ProductPage(driver);
 
-            Browser.WaitForElement(driver, checkoutPage.btnAddressCheckout);
-            Browser.Click(driver, checkoutPage.btnAddressCheckout);
+                Browser.WaitForElement(driver, productPage.txtQuantity);
+                Assert.AreEqual(Variables.Quantity, productPage.txtQuantity.GetAttribute("value"));
+                new SelectElement(productPage.ddlSize).SelectByText(Variables.Size);
 
-            Browser.WaitForElement(driver, checkoutPage.btnAddressCheckout);
-            Browser.Click(driver, checkoutPage.chkTermsOfService);
-            Browser.Click(driver, checkoutPage.btnAddressCheckout);
+                Browser.WaitForElement(driver, productPage.btnAddToCart);
+                Browser.Click(driver, productPage.btnAddToCart);
 
-            Browser.WaitForElement(driver, checkoutPage.lnkPayByCheck);
-            Browser.Click(driver, checkoutPage.lnkPayByCheck);
+                Browser.WaitForElement(driver, productPage.lblResponse);
+                Assert.AreEqual(Variables.SuccessfulCart, productPage.lblResponse.Text.Trim());
 
-            Browser.WaitForElement(driver, checkoutPage.btnConfirmOrder);
-            Browser.Click(driver, checkoutPage.btnConfirmOrder);
+                test.Log(Status.Info, "Attempting to checkout and purchase product");
 
-            Browser.WaitForElement(driver, checkoutPage.lblResponse);
-            Assert.AreEqual(Variables.SuccessfulOrder, checkoutPage.lblResponse.Text);
-            #endregion
+                Browser.WaitForElement(driver, productPage.btnProceedToCheckout);
+                Browser.Click(driver, productPage.btnProceedToCheckout);
+
+                var checkoutPage = new CheckoutPage(driver);
+                #endregion
+
+                #region Verify correct item has been added to cart and checkout
+                test.Log(Status.Info, "Verify correct product is in the cart");
+
+                Browser.WaitForElement(driver, checkoutPage.lblProduct);
+                Assert.AreEqual(Variables.Product, checkoutPage.lblProduct.Text);
+
+                Browser.WaitForElement(driver, checkoutPage.btnSummaryCheckout);
+                Browser.Click(driver, checkoutPage.btnSummaryCheckout);
+
+                Browser.WaitForElement(driver, checkoutPage.btnAddressCheckout);
+                Browser.Click(driver, checkoutPage.btnAddressCheckout);
+
+                Browser.WaitForElement(driver, checkoutPage.chkTermsOfService);
+                Browser.WaitForElement(driver, checkoutPage.btnAddressCheckout);
+                Browser.Click(driver, checkoutPage.chkTermsOfService);
+                Browser.Click(driver, checkoutPage.btnAddressCheckout);
+
+                Browser.WaitForElement(driver, checkoutPage.lnkPayByCheck);
+                Browser.Click(driver, checkoutPage.lnkPayByCheck);
+
+                Browser.WaitForElement(driver, checkoutPage.btnConfirmOrder);
+                Browser.Click(driver, checkoutPage.btnConfirmOrder);
+
+                Browser.WaitForElement(driver, checkoutPage.lblResponse);
+                Assert.AreEqual(Variables.SuccessfulOrder, checkoutPage.lblResponse.Text);
+
+                test.Log(Status.Info, "Verify product has been purchased successfully");
+
+                test.Log(Status.Pass, "OrderProductTest has passed successfully");
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                test.Log(Status.Fail, ex.Message);
+            }
         }
     }
 }

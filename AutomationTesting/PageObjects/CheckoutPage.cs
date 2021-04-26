@@ -13,7 +13,7 @@ namespace AutomationTesting.PageObjects
         public IWebElement btnSummaryCheckout = null;
         [FindsBy(How = How.XPath, Using = "//button/span[contains(text(), 'Proceed to checkout')]")]
         public IWebElement btnAddressCheckout = null;
-        [FindsBy(How = How.Id, Using = "cgv")]
+        [FindsBy(How = How.XPath, Using = "//label[@for='cgv']")]
         public IWebElement chkTermsOfService = null;
         [FindsBy(How = How.XPath, Using = "//a[@title='Pay by check.']")]
         public IWebElement lnkPayByCheck = null;

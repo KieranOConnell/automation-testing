@@ -2,8 +2,10 @@
 using AutomationTesting.PageObjects;
 using AutomationTesting.Settings;
 using AutomationTesting.Utilities;
+using AventStack.ExtentReports;
 using NUnit.Framework;
 using OpenQA.Selenium.Support.UI;
+using System;
 
 namespace AutomationTesting.TestCases
 {
@@ -18,64 +20,89 @@ namespace AutomationTesting.TestCases
         [Description("Verifies the functionality of the contact us feature")]
         public void ContactUs(string browserName, string operatingSystem)
         {
-            #region Setting up browser and OS for testing
-            SetUp(browserName, operatingSystem);
-            #endregion
+            try
+            {
+                #region Setting up browser and OS for testing
+                test = report.CreateTest(String.Format("ContactUsTest - {0}, {1}", browserName, operatingSystem));
+                test.Log(Status.Info, "Starting the ContactUsTest");
 
-            #region Navigate to the store homepage
-            driver.Navigate().GoToUrl(Variables.Website);
-            Assert.True(driver.Title.Contains("My Store"));
+                SetUp(browserName, operatingSystem);
+                #endregion
 
-            var homePage = new HomePage(driver);
-            #endregion
+                #region Navigate to the store homepage
+                test.Log(Status.Info, "Navigating to the store homepage");
 
-            #region Click the login button to progress to authentication
-            Browser.WaitForElement(driver, homePage.btnLogin);
-            Browser.Click(driver, homePage.btnLogin);
+                driver.Navigate().GoToUrl(Variables.Website);
+                Assert.True(driver.Title.Contains("My Store"));
 
-            var authenticationPage = new AuthenticationPage(driver);
-            #endregion
+                var homePage = new HomePage(driver);
+                #endregion
 
-            #region Enter login information & click sign in button
-            Browser.WaitForElement(driver, authenticationPage.txtEmail);
-            Browser.WaitForElement(driver, authenticationPage.txtPassword);
+                #region Click the login button to progress to authentication
+                test.Log(Status.Info, "Attempting to log in to the store");
 
-            authenticationPage.txtEmail.SendKeys(Variables.Email);
-            authenticationPage.txtPassword.SendKeys(Variables.Password);
+                Browser.WaitForElement(driver, homePage.btnLogin);
+                Browser.Click(driver, homePage.btnLogin);
 
-            Browser.WaitForElement(driver, authenticationPage.btnLogin);
-            Browser.Click(driver, authenticationPage.btnLogin);
+                var authenticationPage = new AuthenticationPage(driver);
+                #endregion
 
-            var accountPage = new AccountPage(driver);
-            #endregion
+                #region Enter login information & click sign in button
+                test.Log(Status.Info, "Entering login information & signing in");
 
-            #region Verify successful login of test user
-            Browser.WaitForElement(driver, accountPage.lnkUser);
+                Browser.WaitForElement(driver, authenticationPage.txtEmail);
+                Browser.WaitForElement(driver, authenticationPage.txtPassword);
 
-            Assert.True(accountPage.lnkUser.Text.Equals(Variables.User));
-            #endregion
+                authenticationPage.txtEmail.SendKeys(Variables.Email);
+                authenticationPage.txtPassword.SendKeys(Variables.Password);
 
-            #region Go to the contact us page and send a message
-            Browser.WaitForElement(driver, accountPage.lnkContactUs);
-            Browser.Click(driver, accountPage.lnkContactUs);
+                Browser.WaitForElement(driver, authenticationPage.btnLogin);
+                Browser.Click(driver, authenticationPage.btnLogin);
 
-            var contactUsPage = new ContactUsPage(driver);
+                var accountPage = new AccountPage(driver);
+                #endregion
 
-            Browser.WaitForElement(driver, contactUsPage.txaMessage);
+                #region Verify successful login of test user
+                test.Log(Status.Info, "Verifying successful login of test user");
 
-            new SelectElement(contactUsPage.ddlSubjectHeading).SelectByText(Variables.SubjectHeading);
-            Assert.AreEqual(Variables.Email, contactUsPage.txtEmail.GetAttribute("value"));
-            contactUsPage.txaMessage.SendKeys(Variables.Message);
+                Browser.WaitForElement(driver, accountPage.lnkUser);
 
-            Browser.WaitForElement(driver, contactUsPage.btnSend);
-            Browser.Click(driver, contactUsPage.btnSend);
-            #endregion
+                Assert.True(accountPage.lnkUser.Text.Equals(Variables.User));
+                #endregion
 
-            #region Verify message being sent successfully
-            Browser.WaitForElement(driver, contactUsPage.lblResponse);
+                #region Go to the contact us page and send a message
+                test.Log(Status.Info, "Navigating to the contact us page");
+                Browser.WaitForElement(driver, accountPage.lnkContactUs);
+                Browser.Click(driver, accountPage.lnkContactUs);
 
-            Assert.True(contactUsPage.lblResponse.Text.Equals(Variables.SuccessfulMessage));
-            #endregion
+                var contactUsPage = new ContactUsPage(driver);
+
+                Browser.WaitForElement(driver, contactUsPage.txaMessage);
+
+                new SelectElement(contactUsPage.ddlSubjectHeading).SelectByText(Variables.SubjectHeading);
+                Assert.AreEqual(Variables.Email, contactUsPage.txtEmail.GetAttribute("value"));
+                contactUsPage.txaMessage.SendKeys(Variables.Message);
+
+                test.Log(Status.Info, "Sending a messaage using the contact us feature");
+
+                Browser.WaitForElement(driver, contactUsPage.btnSend);
+                Browser.Click(driver, contactUsPage.btnSend);
+                #endregion
+
+                #region Verify message being sent successfully
+                test.Log(Status.Info, "Verifying that the message was sent successfully");
+
+                Browser.WaitForElement(driver, contactUsPage.lblResponse);
+
+                Assert.True(contactUsPage.lblResponse.Text.Equals(Variables.SuccessfulMessage));
+
+                test.Log(Status.Pass, "ContactUsTest has passed successfully");
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                test.Log(Status.Fail, ex.Message);
+            }
         }
     }
 }

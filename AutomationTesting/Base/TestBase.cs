@@ -1,9 +1,10 @@
-﻿using Microsoft.Edge.SeleniumTools;
+﻿using AutomationTesting.Utilities;
+using AventStack.ExtentReports;
+using Microsoft.Edge.SeleniumTools;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Safari;
 using System;
@@ -14,6 +15,8 @@ namespace AutomationTesting.Base
     public class TestBase
     {
         protected IWebDriver driver;
+        protected ExtentReports report = ExtentManager.GetInstance();
+        protected ExtentTest test;
 
         public void SetUp(string browserName, string operatingSystem)
         {
@@ -39,7 +42,8 @@ namespace AutomationTesting.Base
         [TearDown]
         public void TearDown()
         {
-            driver.Quit();
+            report.Flush();
+            driver.Quit();      
         }
 
         private dynamic GetBrowserOptions(string browserName)
