@@ -9,6 +9,7 @@ namespace AutomationTesting.Utilities
     {
         public static ExtentHtmlReporter extentHtmlReporter;
         private static ExtentReports extent;
+        private static KlovReporter klov;
 
         private ExtentManager()
         {
@@ -25,7 +26,13 @@ namespace AutomationTesting.Utilities
                 string reportName = "Report-" + DateTime.Now.ToString("dd/MM/yyyy").Replace("/", "_") + "-" + DateTime.Now.ToString("HH:mm:ss").Replace(":", "_") + ".html";
                 extentHtmlReporter = new ExtentHtmlReporter(reportPath + reportName);
                 extent = new ExtentReports();
-                extent.AttachReporter(extentHtmlReporter);
+
+                klov = new KlovReporter();
+                klov.InitMongoDbConnection("localhost", 27017);
+                klov.ProjectName = "Automation Report";
+                klov.ReportName = "Report-" + DateTime.Now.ToString("dd/MM/yyyy").Replace("/", "_") + "-" + DateTime.Now.ToString("HH:mm:ss").Replace(":", "_");
+
+                extent.AttachReporter(extentHtmlReporter, klov);
                 extent.AddSystemInfo("Operating Systems", "Windows 10, Ubuntu, macOS Big Sur");
                 extent.AddSystemInfo("Browsers", "Google Chrome, Mozilla Firefox, Microsoft Edge, Safari");
 
