@@ -472,8 +472,10 @@
     <Compile Include="Settings\Variables.cs" />
     <Compile Include="TestCases\ContactUsTest.cs" />
     <Compile Include="TestCases\CreateUserTest.cs" />
+    <Compile Include="TestCases\FailureTest.cs" />
     <Compile Include="TestCases\LoginTest.cs" />
     <Compile Include="TestCases\OrderProductTest.cs" />
+    <Compile Include="TestCases\SkipTest.cs" />
     <Compile Include="Utilities\Browser.cs" />
     <Compile Include="Utilities\ExtentManager.cs" />
   </ItemGroup>
