@@ -1,6 +1,6 @@
 <h1 align="center">Automation Testing</h1>
 <p>
-> C# Selenium WebDriver Test Automation for http://automationpractice.com/index.php
+> NUnit Selenium WebDriver Test Automation for http://automationpractice.com/index.php
 </p>
 
 ## Author
